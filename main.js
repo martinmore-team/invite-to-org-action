@@ -7,7 +7,7 @@ const BOTS = [
 
 module.exports = async ({ github, context, core }) => {
     const {
-        ORGANISATION: org,
+        ORGANIZATION: org,
         TEAM_SLUG: team_slug,
         PR_NUMBER: prNumber,
         REPOSITORY_NAME: repositoryName,
