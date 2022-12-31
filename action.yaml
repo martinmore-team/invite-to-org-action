@@ -1,0 +1,38 @@
+name: "Invite to organization"
+description: "Invite contributors to organization"
+
+inputs:
+  organization:
+    description: "Organization name"
+    required: true
+  team-slug:
+    description: "Team slug"
+    required: true
+  github-token:
+    description: "Github Token"
+    required: true
+  comment:
+    description: "Comment message"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Get PR info
+      id: get-info
+      uses: martinmore-team/get-pr-info-action@v4
+      env:
+        ACCESS_TOKEN: ${{ inputs.github-token }}
+    - uses: actions/github-script@v4
+      env:
+        ORGANIZATION: ${{ inputs.organization }}
+        TEAM_SLUG: ${{ inputs.team-slug }}
+        USERNAME: ${{ steps.get-info.outputs.contributor-username }}
+        REPOSITORY_NAME: ${{ steps.get-info.outputs.repository-name }}
+        PR_NUMBER: ${{ steps.get-info.outputs.pr-number }}
+        COMMENT: ${{ inputs.comment }}
+      with:
+        github-token: ${{ inputs.github-token }}
+        script: |
+          const script = require('${{ github.action_path }}/main.js')
+          await script({github, context, core})
